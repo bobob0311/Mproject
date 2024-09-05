@@ -43,6 +43,9 @@
         boxElement.addEventListener("drop", (e) => {
           e.preventDefault();
           const copyItem = target.cloneNode(true);
+          if (boxElement.childNodes.length == 1) {
+            boxElement.removeChild(boxElement.firstChild);
+          }
           boxElement.appendChild(copyItem);
         });
       });
