@@ -8,9 +8,9 @@
   </head>
   <body>
     <div style="display: flex; justify-content: center">
-      <span class="item1" draggable="true"> 드래그용 아이템 </span>
-      <span class="item2" draggable="true"> 드래그용 아이템 </span>
-      <span class="item3" draggable="true"> 드래그용 아이템 </span>
+      <span class="item item1" draggable="true"> 드래그용 아이템 </span>
+      <span class="item item2" draggable="true"> 드래그용 아이템 </span>
+      <span class="item item3" draggable="true"> 드래그용 아이템 </span>
     </div>
 
     <div class="container">
@@ -18,37 +18,6 @@
       <div class="box"></div>
     </div>
 
-    <script>
-      const item1 = document.querySelector(".item1");
-      const item2 = document.querySelector(".item2");
-      const item3 = document.querySelector(".item3");
-
-      let target;
-      [item1, item2, item3].forEach((targetItem) => {
-        targetItem.addEventListener("dragstart", (e) => {
-          target = targetItem;
-        });
-      });
-
-      const box = document.querySelectorAll(".box");
-      box.forEach((boxElement) => {
-        boxElement.addEventListener("dragenter", (e) => {
-          console.log("box에 진입했습니다.");
-        });
-
-        boxElement.addEventListener("dragover", (e) => {
-          e.preventDefault();
-        });
-
-        boxElement.addEventListener("drop", (e) => {
-          e.preventDefault();
-          const copyItem = target.cloneNode(true);
-          if (boxElement.childNodes.length == 1) {
-            boxElement.removeChild(boxElement.firstChild);
-          }
-          boxElement.appendChild(copyItem);
-        });
-      });
-    </script>
+    <script src="add.js"></script>
   </body>
 </html>
