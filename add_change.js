@@ -18,15 +18,17 @@ const handleDragOver = (e) => {
 
   if (targetExistsInItems) {
     e.target.parentNode.insertBefore(draggingItem, e.target);
+  } else {
+    e.currentTarget.append(draggingItem);
   }
 
+  /*
   const boxInItems = boxes.some((box) => box === e.target);
 
   if (boxInItems) {
     e.target.append(draggingItem);
   }
 
-  /*
   let changeTarget = canChangeItems.find((item) => {
     return e.clientY <= item.offsetTop + item.offsetHeight / 2;
   });
@@ -56,8 +58,6 @@ items.forEach((item) => {
       e.target.classList.remove("dragging");
     });
   });
-
-  item.addEventListener("dragover", handleDragOver);
 
   item.addEventListener("dragend", (e) => {
     copyItem = null;
