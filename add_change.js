@@ -1,6 +1,6 @@
 const items = [...document.querySelectorAll(".item")];
 const boxes = [...document.querySelectorAll(".box")];
-
+let canChangeItems = [];
 // 복사해서 추가하는데 사용됨
 let copyItem;
 
@@ -8,23 +8,26 @@ let copyItem;
 const handleDragOver = (e) => {
   let draggingItem =
     copyItem == null ? document.querySelector(".dragging") : copyItem;
-  let otherItems = [];
+
+  // 박스안에 있는 체인지 가능한 요소들
   boxes.forEach((box) => {
-    otherItems = [...box.querySelectorAll(".item"), ...otherItems];
+    canChangeItems = [...box.querySelectorAll(".item"), ...canChangeItems];
   });
 
-  otherItems.forEach((item) => {
-    item.addEventListener("dragstart", () => {
-      setTimeout(item.classList.add("dragging"), 0);
-    });
-    item.addEventListener("dragend", () => {
-      item.classList.remove("dragging");
-    });
+  const targetExistsInItems = canChangeItems.some((item) => item === e.target);
 
-    item.addEventListener("dragover", handleDragOver);
-  });
+  if (targetExistsInItems) {
+    e.target.parentNode.insertBefore(draggingItem, e.target);
+  }
 
-  let changeTarget = otherItems.find((item) => {
+  const boxInItems = boxes.some((box) => box === e.target);
+
+  if (boxInItems) {
+    e.target.append(draggingItem);
+  }
+
+  /*
+  let changeTarget = canChangeItems.find((item) => {
     return e.clientY <= item.offsetTop + item.offsetHeight / 2;
   });
   if (changeTarget != undefined) {
@@ -32,27 +35,38 @@ const handleDragOver = (e) => {
   } else {
     boxes[0].append(draggingItem);
   }
+  */
 };
 
 items.forEach((item) => {
-  item.addEventListener("dragstart", () => {
-    setTimeout(item.classList.add("dragging"), 0);
+  item.addEventListener("dragstart", (e) => {
+    setTimeout(e.target.classList.add("dragging"), 0);
+
     copyItem = item.cloneNode(true);
+
     copyItem.classList.remove("dragging");
+
+    copyItem.addEventListener("dragstart", (e) => {
+      setTimeout(() => {
+        e.target.classList.add("dragging");
+      }, 0);
+    });
+
+    copyItem.addEventListener("dragend", (e) => {
+      e.target.classList.remove("dragging");
+    });
   });
 
   item.addEventListener("dragover", handleDragOver);
 
-  item.addEventListener("dragend", () => {
+  item.addEventListener("dragend", (e) => {
     copyItem = null;
-    item.classList.remove("dragging");
+    e.target.classList.remove("dragging");
   });
 });
 
 boxes.forEach((box) => {
   box.addEventListener("dragover", (e) => {
-    if (box.children.length == 0) {
-      box.append(copyItem);
-    }
+    handleDragOver(e);
   });
 });
