@@ -3,10 +3,12 @@ const boxes = [...document.querySelectorAll(".box")];
 let canChangeItems = [];
 // 복사해서 추가하는데 사용됨
 let copyItem;
+let draggingItem;
 
+let isDropped = false;
 // 자리 체인지할 때 사용할 거임
 const handleDragOver = (e) => {
-  let draggingItem =
+  draggingItem =
     copyItem == null ? document.querySelector(".dragging") : copyItem;
 
   // 박스안에 있는 체인지 가능한 요소들
@@ -57,8 +59,10 @@ items.forEach((item) => {
     copyItem.addEventListener("dragend", (e) => {
       e.target.classList.remove("dragging");
     });
+    copyItem.addEventListener("drop", () => {
+      console.log("drop");
+    });
   });
-
   item.addEventListener("dragend", (e) => {
     copyItem = null;
     e.target.classList.remove("dragging");
@@ -67,6 +71,17 @@ items.forEach((item) => {
 
 boxes.forEach((box) => {
   box.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    isDropped = false;
     handleDragOver(e);
+  });
+  box.addEventListener("drop", (e) => {
+    isDropped = true;
+  });
+  box.addEventListener("dragleave", (e) => {
+    if (e.target === e.currentTarget && !isDropped) {
+      e.currentTarget.removeChild(draggingItem);
+      console.log("zzz");
+    }
   });
 });
